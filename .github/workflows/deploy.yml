@@ -1,0 +1,28 @@
+name: Despliegue a Azure ACR
+
+on:
+  push:
+    branches: [ "main" ] # El proceso se dispara automáticamente al actualizar esta rama
+
+jobs:
+  construir-y-subir:
+    runs-on: ubuntu-latest # GitHub nos presta un servidor temporal para el trabajo pesado
+
+    steps:
+    # 1. El servidor descarga tu código (script.py, Dockerfile, etc.)
+    - name: Obtener el código
+      uses: actions/checkout@v4
+
+    # 2. Usa los candados que configuraste para entrar a tu cuenta de Azure
+    - name: Iniciar sesión en Azure ACR
+      uses: azure/docker-login@v1
+      with:
+        login-server: jaimebovedadatos.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    # 3. Ejecuta los comandos de Docker por ti y empuja el resultado a la bóveda
+    - name: Construir y Empujar imagen
+      run: |
+        docker build -t jaimebovedadatos.azurecr.io/proyecto-etl_3.4:latest .
+        docker push jaimebovedadatos.azurecr.io/proyecto-etl_3.4:latest
