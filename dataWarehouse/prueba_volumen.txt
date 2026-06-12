@@ -1,0 +1,1 @@
+Si puedes abrir este archivo, ¡los volúmenes de Docker funcionan perfectamente!
